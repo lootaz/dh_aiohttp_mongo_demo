@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-volume:/data/db
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: toor
+
+  dh:
+    build: .
+    volumes:
+      - .:/usr/src
+    command: bash -c "python3 db.py && python3 main.py"
+    ports:
+      - 8080:8080
+    links:
+      - mongo
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-volume:
+    driver: local

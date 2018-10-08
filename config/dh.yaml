@@ -1,0 +1,6 @@
+mongo:
+  database: dh
+  host: mongo
+  port: 27017
+  username: root
+  password: toor

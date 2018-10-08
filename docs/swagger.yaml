@@ -1,0 +1,144 @@
+swagger: "2.0"
+info:
+  title: DH API
+  version: 0.0.1
+securityDefinitions:
+  TokenAuth:
+    type: apiKey
+    in: header
+    name: AIOHTTP_TOKEN
+
+paths:
+  /api/auth:
+    post:
+      description: Authenticate user by username and password
+      tags:
+        - auth
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: OK
+          headers:
+            AIOHTTP_TOKEN:
+              schema:
+                type: string
+
+  /api/entity/{id}/subtree:
+    get:
+      description: Get subtree by entity id
+      tags:
+        - entity
+      security:
+        - TokenAuth: []
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                name:
+                  type: string
+                parent_name:
+                  type: string
+                text:
+                  type: string
+                parents:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      parent_name:
+                        type: string
+                      text:
+                        type: string
+  /api/entity/insert:
+    post:
+      description: Insert one entity
+      tags:
+        - entity
+      security:
+        - TokenAuth: []
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+              type: object
+              properties:
+                  name:
+                      type: string
+                  text:
+                      type: string
+                  parent_name:
+                      type: string
+      responses:
+        200:
+          description: OK
+  /api/entity/find:
+    post:
+      description: Find entity by text
+      tags:
+        - entity
+      security:
+        - TokenAuth: []
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              search_request:
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                name:
+                  type: string
+                parent_name:
+                  type: string
+                text:
+                  type: string
+                parents:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      parent_name:
+                        type: string
+                      text:
+                        type: string
