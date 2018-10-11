@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   title: DH API
-  version: 0.0.1
+  version: 0.0.2
 securityDefinitions:
   TokenAuth:
     type: apiKey
@@ -51,29 +51,8 @@ paths:
           schema:
             type: array
             items:
-              type: object
-              properties:
-                _id:
-                  type: string
-                name:
-                  type: string
-                parent_name:
-                  type: string
-                text:
-                  type: string
-                parents:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      _id:
-                        type: string
-                      name:
-                        type: string
-                      parent_name:
-                        type: string
-                      text:
-                        type: string
+              type: string
+
   /api/entity/insert:
     post:
       description: Insert one entity
@@ -86,17 +65,14 @@ paths:
           in: body
           required: true
           schema:
-              type: object
-              properties:
-                  name:
-                      type: string
-                  text:
-                      type: string
-                  parent_name:
-                      type: string
+            $ref: "#/definitions/EntityWOId"
       responses:
         200:
           description: OK
+          schema:
+            $ref: "#/definitions/Entity"
+
+
   /api/entity/find:
     post:
       description: Find entity by text
@@ -119,26 +95,27 @@ paths:
           schema:
             type: array
             items:
-              type: object
-              properties:
-                _id:
-                  type: string
-                name:
-                  type: string
-                parent_name:
-                  type: string
-                text:
-                  type: string
-                parents:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      _id:
-                        type: string
-                      name:
-                        type: string
-                      parent_name:
-                        type: string
-                      text:
-                        type: string
+              type: string
+
+definitions:
+  EntityWOId:
+    type: object
+    properties:
+      name:
+        type: string
+      text:
+        type: string
+      parent_id:
+        type: string
+
+  Entity:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      text:
+        type: string
+      parent_id:
+        type: string

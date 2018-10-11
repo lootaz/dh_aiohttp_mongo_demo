@@ -1,7 +1,9 @@
 import asyncio
 import hashlib
 
+import pymongo
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
 
 DSN = "mongodb://{username}:{password}@{host}:{port}"
 
@@ -20,28 +22,36 @@ async def close_mongo(app):
     app['db'].close()
 
 
-def init_sample_data():
+def get_collection(collection_name):
     from settings import config
 
     conf = config['mongo']
-    # client = AsyncIOMotorClient(conf['host'], conf['port'])
-
-    from pymongo import MongoClient
     db_url = DSN.format(**conf)
     client = MongoClient(db_url)
 
-    db = client.dh
+    collection = client.dh[collection_name]
+    return collection
+
+
+def create_text_index():
+    curs = get_collection('entity')
+    curs.create_index([("text", pymongo.TEXT)])
+
+
+def init_sample_data():
+    curs = get_collection('user')
 
     user = {
         "username": "admin",
         "password": hashlib.sha256(b"nimda").hexdigest()
     }
 
-    result = db.user.update({"username": user.get('username')},
-                            user, upsert=True)
+    result = curs.update({"username": user.get('username')},
+                         user, upsert=True)
 
     return result
 
 
 if __name__ == '__main__':
-    print(init_sample_data())
+    init_sample_data()
+    create_text_index()
